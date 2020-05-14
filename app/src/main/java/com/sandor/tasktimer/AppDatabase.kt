@@ -10,7 +10,7 @@ private const val TAG = "AppDatabase"
 private const val DATABASE_NAME = "TaskTimer.db"
 private const val DATABASE_VERSION = 1
 
-internal class AppDatabase constructor(context: Context) : SQLiteOpenHelper
+internal class AppDatabase private constructor(context: Context) : SQLiteOpenHelper
     (context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -31,5 +31,7 @@ internal class AppDatabase constructor(context: Context) : SQLiteOpenHelper
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
 //        TODO()
     }
+
+    companion object : SingletonHolder<AppDatabase,Context>(::AppDatabase)
 
 }
