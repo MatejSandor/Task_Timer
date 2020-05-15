@@ -29,7 +29,13 @@ internal class AppDatabase private constructor(context: Context) : SQLiteOpenHel
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-//        TODO()
+        Log.d(TAG,"onUpgrade: called")
+        when(oldVersion) {
+            1 -> {
+                //upgrade logic from version 1
+            }
+            else -> throw IllegalStateException("OnUpgrade with unknown $newVersion")
+        }
     }
 
     companion object : SingletonHolder<AppDatabase,Context>(::AppDatabase)
