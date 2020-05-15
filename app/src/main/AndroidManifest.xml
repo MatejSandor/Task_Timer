@@ -19,6 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="com.sandor.tasktimer.provider"
+            android:name="com.sandor.tasktimer.AppProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
