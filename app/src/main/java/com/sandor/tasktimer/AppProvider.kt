@@ -17,8 +17,8 @@ private const val TASKS_ID = 101
 private const val TIMINGS = 200
 private const val TIMINGS_ID = 201
 
-private const val TASKS_DURATIONS = 400
-private const val TASKS_DURATIONS_ID = 401
+private const val TASK_DURATIONS = 400
+private const val TASK_DURATIONS_ID = 401
 
 val CONTENT_AUTHORITY_URI : Uri = Uri.parse("content://$CONTENT_AUTHORITY")
 
@@ -28,7 +28,18 @@ class AppProvider: ContentProvider() {
 
     private fun buildUriMatcher(): UriMatcher {
         Log.d(TAG,"buildUriMatcher: starts")
-        return UriMatcher(UriMatcher.NO_MATCH)
+        val matcher = UriMatcher(UriMatcher.NO_MATCH)
+
+        matcher.addURI(CONTENT_AUTHORITY, TasksContract.TABLE_NAME, TASKS)
+        matcher.addURI(CONTENT_AUTHORITY, "${TasksContract.TABLE_NAME}/#", TASKS_ID)
+
+//        matcher.addURI(CONTENT_AUTHORITY, TimingsContract.TABLE_NAME, TIMINGS)
+//        matcher.addURI(CONTENT_AUTHORITY, "${TimingsContract.TABLE_NAME}/#", TIMINGS_ID)
+//
+//        matcher.addURI(CONTENT_AUTHORITY, DurationsContract.TABLE_NAME, TASK_DURATIONS)
+//        matcher.addURI(CONTENT_AUTHORITY, "${DurationsContract.TABLE_NAME}/#", TASK_DURATIONS_ID)
+
+        return matcher
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
