@@ -113,7 +113,21 @@ class AppProvider: ContentProvider() {
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        TODO("Not yet implemented")
+//        Log.d(TAG,"query: called with uri $uri")
+//        val match = uriMatcher.match(uri)
+//        Log.d(TAG,"query: match $match")
+//
+//        val recordId: Long
+//        val returnUri: Uri
+//
+//        when (match) {
+//            TASKS -> {
+//                val context = context ?: throw NullPointerException("Context can't be null here!")
+//                val db = AppDatabase.getInstance(context).readableDatabase
+//            }
+//        }
+
+        TODO("Implement the rest of the function")
     }
 
     override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int {
