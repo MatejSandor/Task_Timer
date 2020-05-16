@@ -1,5 +1,7 @@
 package com.sandor.tasktimer
 
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
@@ -17,6 +19,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+//        testInsert()
+//        testUpdate()
 
 //        val projection = arrayOf(TasksContract.Columns.TASK_NAME,TasksContract.Columns.TASK_SORT_ORDER)
         val sortColumn = TasksContract.Columns.TASK_SORT_ORDER
@@ -41,6 +46,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
         Log.d(TAG,"**********************************")
+
+    }
+
+    private fun testInsert() {
+        val values = ContentValues().apply {
+            put(TasksContract.Columns.TASK_NAME, "Test Task 1")
+            put(TasksContract.Columns.TASK_DESCRIPTION, "Test description 1")
+            put(TasksContract.Columns.TASK_SORT_ORDER, 2)
+        }
+
+        val uri = contentResolver.insert(TasksContract.CONTENT_URI, values)
+        Log.d(TAG,"testInsert: new row id (in uri) is $uri")
+        if(uri != null) {
+            Log.d(TAG,"testInsert: id (in uri) is ${TasksContract.getId(uri)}")
+        }
+
+    }
+
+    private fun testUpdate() {
+        val values = ContentValues().apply {
+            put(TasksContract.Columns.TASK_NAME, "Content Provider")
+            put(TasksContract.Columns.TASK_DESCRIPTION, "Content Provider development")
+        }
+
+        val taskUri = TasksContract.buildUriFromId(4)
+        val rowsAffected = contentResolver.update(taskUri, values,null,null)
+        Log.d(TAG,"testUpdate: number of rows updated is $rowsAffected")
 
     }
 
