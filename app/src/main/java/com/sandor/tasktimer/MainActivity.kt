@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
 //        testInsert()
 //        testUpdate()
+//        testUpdateTwo()
+//        testDelete()
 
 //        val projection = arrayOf(TasksContract.Columns.TASK_NAME,TasksContract.Columns.TASK_SORT_ORDER)
         val sortColumn = TasksContract.Columns.TASK_SORT_ORDER
@@ -75,6 +77,28 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG,"testUpdate: number of rows updated is $rowsAffected")
 
     }
+
+    private fun testUpdateTwo() {
+        val values = ContentValues().apply {
+            put(TasksContract.Columns.TASK_SORT_ORDER, 999)
+            put(TasksContract.Columns.TASK_DESCRIPTION, "For deletion")
+        }
+
+        val selection = TasksContract.Columns.TASK_SORT_ORDER + " = ?"
+        val selectionArgs = arrayOf("99")
+
+        val rowsAffected = contentResolver.update(TasksContract.CONTENT_URI, values,selection,selectionArgs)
+        Log.d(TAG,"testUpdate: number of rows updated is $rowsAffected")
+
+    }
+
+    private fun testDelete() {
+        val selection = TasksContract.Columns.TASK_SORT_ORDER + " = 999"
+        val rowsAffected = contentResolver.delete(TasksContract.CONTENT_URI,selection,null)
+        Log.d(TAG,"testUpdate: number of rows deleted is $rowsAffected")
+
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
