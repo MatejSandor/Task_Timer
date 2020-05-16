@@ -17,4 +17,7 @@
     <string name="menutitle_settings">Settings</string>
     <string name="menutitle_showAbout">About TaskTimer</string>
     <string name="menutitle_generate">Generate Data</string>
+    <string name="no_task_message">No Task Selected</string>
+    <string name="edit_button_description">Button to edit tasks detail</string>
+    <string name="delete_button_description">Button to delete a task</string>
 </resources>
