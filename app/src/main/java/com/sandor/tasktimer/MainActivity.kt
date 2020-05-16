@@ -18,30 +18,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val appDatabase = AppDatabase.getInstance(this)
-        val db = appDatabase.readableDatabase
-
-        val cursor = db.rawQuery("SELECT * FROM Tasks", null)
+        val projection = arrayOf(TasksContract.Columns.TASK_NAME,TasksContract.Columns.TASK_SORT_ORDER)
+        val sortColumn = TasksContract.Columns.TASK_SORT_ORDER
+        val cursor = contentResolver.query(TasksContract.CONTENT_URI,
+        projection,
+        null,
+        null,
+        sortColumn)
         Log.d(TAG,"**********************************")
-        cursor.use {
+        cursor?.use {
             while (it.moveToNext()) {
                 with(cursor) {
-                    val id = getLong(0)
-                    val name = getString(1)
-                    val description = getString(2)
-                    val sortOrder = getInt(3)
-                    val result = "ID: $id Name: $name description: $description sort order: $sortOrder"
+                    val name = getString(0)
+//                    val description = getString(2)
+                    val sortOrder = getInt(1)
+                    val result = "Name: $name Sort order: $sortOrder"
                     Log.d(TAG,"onCreate: reading data $result")
                 }
             }
         }
         Log.d(TAG,"**********************************")
 
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
