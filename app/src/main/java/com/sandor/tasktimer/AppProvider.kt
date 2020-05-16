@@ -4,6 +4,7 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
+import android.database.SQLException
 import android.database.sqlite.SQLiteQueryBuilder
 import android.net.Uri
 import android.util.Log
@@ -21,14 +22,14 @@ private const val TIMINGS_ID = 201
 private const val TASK_DURATIONS = 400
 private const val TASK_DURATIONS_ID = 401
 
-val CONTENT_AUTHORITY_URI : Uri = Uri.parse("content://$CONTENT_AUTHORITY")
+val CONTENT_AUTHORITY_URI: Uri = Uri.parse("content://$CONTENT_AUTHORITY")
 
-class AppProvider: ContentProvider() {
+class AppProvider : ContentProvider() {
 
     private val uriMatcher by lazy { buildUriMatcher() }
 
     private fun buildUriMatcher(): UriMatcher {
-        Log.d(TAG,"buildUriMatcher: starts")
+        Log.d(TAG, "buildUriMatcher: starts")
         val matcher = UriMatcher(UriMatcher.NO_MATCH)
 
         matcher.addURI(CONTENT_AUTHORITY, TasksContract.TABLE_NAME, TASKS)
@@ -36,7 +37,7 @@ class AppProvider: ContentProvider() {
 
         matcher.addURI(CONTENT_AUTHORITY, TimingsContract.TABLE_NAME, TIMINGS)
         matcher.addURI(CONTENT_AUTHORITY, "${TimingsContract.TABLE_NAME}/#", TIMINGS_ID)
-//
+        
 //        matcher.addURI(CONTENT_AUTHORITY, DurationsContract.TABLE_NAME, TASK_DURATIONS)
 //        matcher.addURI(CONTENT_AUTHORITY, "${DurationsContract.TABLE_NAME}/#", TASK_DURATIONS_ID)
 
@@ -44,7 +45,7 @@ class AppProvider: ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
-        Log.d(TAG,"onCreate: called")
+        Log.d(TAG, "onCreate: called")
         return true
     }
 
@@ -66,10 +67,16 @@ class AppProvider: ContentProvider() {
         }
     }
 
-    override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor? {
-        Log.d(TAG,"query: called with uri $uri")
+    override fun query(
+        uri: Uri,
+        projection: Array<out String>?,
+        selection: String?,
+        selectionArgs: Array<out String>?,
+        sortOrder: String?
+    ): Cursor? {
+        Log.d(TAG, "query: called with uri $uri")
         val match = uriMatcher.match(uri)
-        Log.d(TAG,"query: match $match")
+        Log.d(TAG, "query: match $match")
 
         val queryBuilder = SQLiteQueryBuilder()
 
@@ -106,31 +113,53 @@ class AppProvider: ContentProvider() {
 
         val context = context ?: throw NullPointerException("Context can't be null here!")
         val db = AppDatabase.getInstance(context).readableDatabase
-        val cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder)
+        val cursor =
+            queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder)
         Log.d(TAG, "query: rows in returned cursor = ${cursor.count}") // TODO remove this line
 
         return cursor
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-//        Log.d(TAG,"query: called with uri $uri")
-//        val match = uriMatcher.match(uri)
-//        Log.d(TAG,"query: match $match")
-//
-//        val recordId: Long
-//        val returnUri: Uri
-//
-//        when (match) {
-//            TASKS -> {
-//                val context = context ?: throw NullPointerException("Context can't be null here!")
-//                val db = AppDatabase.getInstance(context).readableDatabase
-//            }
-//        }
+        Log.d(TAG, "query: called with uri $uri")
+        val match = uriMatcher.match(uri)
+        Log.d(TAG, "query: match $match")
 
-        TODO("Implement the rest of the function")
+        val recordId: Long
+        val returnUri: Uri
+
+        when (match) {
+            TASKS -> {
+                val context = context ?: throw NullPointerException("Context can't be null here!")
+                val db = AppDatabase.getInstance(context).writableDatabase
+                recordId = db.insert(TasksContract.TABLE_NAME, null, values)
+
+                if (recordId != -1L) {
+                    returnUri = TasksContract.buildUriFromId(recordId)
+                } else throw SQLException("Failed to insert, Uri was $uri")
+            }
+            TIMINGS -> {
+                val context = context ?: throw NullPointerException("Context can't be null here!")
+                val db = AppDatabase.getInstance(context).writableDatabase
+                recordId = db.insert(TimingsContract.TABLE_NAME, null, values)
+
+                if (recordId != -1L) {
+                    returnUri = TimingsContract.buildUriFromId(recordId)
+                } else throw SQLException("Failed to insert, Uri was $uri")
+            }
+            else -> throw IllegalArgumentException("Unknown URI: $uri")
+        }
+
+        return returnUri
+
     }
 
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int {
+    override fun update(
+        uri: Uri,
+        values: ContentValues?,
+        selection: String?,
+        selectionArgs: Array<out String>?
+    ): Int {
         TODO("Not yet implemented")
     }
 
