@@ -20,11 +20,13 @@ class MainActivity : AppCompatActivity() {
 
         val projection = arrayOf(TasksContract.Columns.TASK_NAME,TasksContract.Columns.TASK_SORT_ORDER)
         val sortColumn = TasksContract.Columns.TASK_SORT_ORDER
-        val cursor = contentResolver.query(TasksContract.CONTENT_URI,
+
+        val cursor = contentResolver.query(TasksContract.buildUriFromId(2),
         projection,
         null,
         null,
         sortColumn)
+
         Log.d(TAG,"**********************************")
         cursor?.use {
             while (it.moveToNext()) {
