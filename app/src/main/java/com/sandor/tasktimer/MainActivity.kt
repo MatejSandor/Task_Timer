@@ -1,17 +1,21 @@
 package com.sandor.tasktimer
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.fragment.app.Fragment
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked {
+
+    private var mTwoPane = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +45,27 @@ class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked {
 
         val newFragment = AddEditFragment.newInstance(task)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, newFragment)
+            .replace(R.id.task_details_container, newFragment)
             .commit()
 
         Log.d(TAG, "taskEditRequest: exiting")
     }
 
+    private fun removeEditPane(fragment: Fragment? = null) {
+        Log.d(TAG, "removeEditPane: called")
+        if(fragment != null) {
+            supportFragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+        }
+
+        task_details_container.visibility = if (mTwoPane) View.INVISIBLE else View.GONE
+        main_fragment.view?.visibility = View.VISIBLE
+    }
+
     override fun onSaveClicked() {
-//        TODO("Not yet implemented")
+        Log.d(TAG, "onSaveClicked: called")
+        var fragment = supportFragmentManager.findFragmentById(R.id.task_details_container)
+        removeEditPane(fragment)
     }
 }
