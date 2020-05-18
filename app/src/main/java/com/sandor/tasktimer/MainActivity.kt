@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +29,25 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.menumain_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.menumain_addTask -> taskEditRequest(null)
+//            R.id.menumain_settings -> true
         }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun taskEditRequest(task: Task?) {
+        Log.d(TAG, "taskEditRequest: called")
+
+        val newFragment = AddEditFragment.newInstance(task)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment, newFragment)
+            .commit()
+
+        Log.d(TAG, "taskEditRequest: exiting")
+    }
+
+    override fun onSaveClicked() {
+//        TODO("Not yet implemented")
     }
 }
