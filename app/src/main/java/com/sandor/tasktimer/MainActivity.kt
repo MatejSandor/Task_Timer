@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked {
         mTwoPane = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         Log.d(TAG, "onCreate: TwoPane is $mTwoPane")
 
-        var fragment = supportFragmentManager.findFragmentById(R.id.task_details_container)
+        val fragment = supportFragmentManager.findFragmentById(R.id.task_details_container)
         if(fragment != null) {
             showEditPane()
         } else {
