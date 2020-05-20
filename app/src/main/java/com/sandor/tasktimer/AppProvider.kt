@@ -144,6 +144,10 @@ class AppProvider : ContentProvider() {
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
 
+        if(recordId > 0) {
+            Log.d(TAG, "insert: setting notifyChange with $uri")
+            context?.contentResolver?.notifyChange(uri,null)
+        }
         return returnUri
 
     }
@@ -198,6 +202,12 @@ class AppProvider : ContentProvider() {
             else -> throw IllegalArgumentException("Unknown URI: $uri")
 
         }
+
+        if(count > 0) {
+            Log.d(TAG, "update: setting notifyChange with $uri")
+            context?.contentResolver?.notifyChange(uri,null)
+        }
+
         return count
     }
 
@@ -251,6 +261,12 @@ class AppProvider : ContentProvider() {
             else -> throw IllegalArgumentException("Unknown URI: $uri")
 
         }
+
+        if(count > 0) {
+            Log.d(TAG, "delete: setting notifyChange with $uri")
+            context?.contentResolver?.notifyChange(uri,null)
+        }
+
         return count
     }
 }
