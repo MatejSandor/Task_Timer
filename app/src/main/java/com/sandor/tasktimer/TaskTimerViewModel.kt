@@ -1,6 +1,7 @@
 package com.sandor.tasktimer
 
 import android.app.Application
+import android.content.ContentValues
 import android.database.ContentObserver
 import android.database.Cursor
 import android.net.Uri
@@ -48,6 +49,35 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
             sortOrder
         )
         databaseCursor.postValue(cursor)}
+    }
+
+    fun saveTask(task: Task): Task {
+        val values = ContentValues()
+        values.put(TasksContract.Columns.TASK_NAME, task.name)
+        values.put(TasksContract.Columns.TASK_DESCRIPTION, task.description)
+        values.put(TasksContract.Columns.TASK_SORT_ORDER, task.sortOrder)
+
+        if(task.id == 0L) {
+            GlobalScope.launch {
+                Log.d(TAG, "saveTask: saving new task")
+                val uri = getApplication<Application>().contentResolver?.insert(TasksContract.CONTENT_URI,values)
+                if (uri != null) {
+                    task.id = TasksContract.getId(uri)
+                    Log.d(TAG, "saveTask: new id is ${task.id}")
+                }
+            }
+        } else {
+            GlobalScope.launch {
+                Log.d(TAG, "saveTask: updating new task")
+                getApplication<Application>().contentResolver?.update(
+                    TasksContract.buildUriFromId(task.id),
+                    values,
+                    null,
+                    null
+                )
+            }
+        }
+            return task
     }
 
     fun deleteTask(taskId: Long) {
