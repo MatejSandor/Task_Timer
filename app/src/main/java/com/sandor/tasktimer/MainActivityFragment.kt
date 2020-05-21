@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.content_main.*
@@ -28,7 +29,7 @@ class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickLi
     }
 
     private var mAdapter = CursorRecyclerViewAdapter(null, this)
-    val viewModel: TaskTimerViewModel by activityViewModels()
+    private val viewModel: TaskTimerViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

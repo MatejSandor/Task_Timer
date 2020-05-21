@@ -24,7 +24,7 @@ private const val TAG = "AddEditFragment"
 class AddEditFragment : Fragment() {
     private var task: Task? = null
     private var listener: OnSaveClicked? = null
-    val viewModel: TaskTimerViewModel by viewModels()
+    private val viewModel: TaskTimerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: starts")
