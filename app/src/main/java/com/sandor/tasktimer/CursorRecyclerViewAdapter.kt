@@ -11,10 +11,31 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.task_list_items.*
 import java.lang.IllegalStateException
 
-class TaskViewHolder(override val containerView: View):
-        RecyclerView.ViewHolder(containerView), LayoutContainer
-
 private const val TAG = "CursorRecyclerViewAdapt"
+
+class TaskViewHolder(override val containerView: View):
+        RecyclerView.ViewHolder(containerView), LayoutContainer {
+    fun bind(task: Task) {
+        tli_name.text = task.name
+        tli_description.text = task.description
+        tli_edit.visibility = View.VISIBLE
+        tli_delete.visibility = View.VISIBLE
+
+        tli_edit.setOnClickListener() {
+            Log.d(TAG, "bind: tli_edit button clicked on task with name ${task.name}")
+        }
+
+        tli_delete.setOnClickListener() {
+            Log.d(TAG, "bind: tli_delete button clicked on task with name ${task.name}")
+        }
+
+        containerView.setOnLongClickListener() {
+            Log.d(TAG, "bind: Long click on task with name ${task.name}")
+            true
+        }
+    }
+}
+
 
 class CursorRecyclerViewAdapter(private var cursor: Cursor?):
         RecyclerView.Adapter<TaskViewHolder>() {
@@ -46,10 +67,8 @@ class CursorRecyclerViewAdapter(private var cursor: Cursor?):
                 cursor.getInt(cursor.getColumnIndex(TasksContract.Columns.TASK_SORT_ORDER)))
 
             task.id = cursor.getLong(cursor.getColumnIndex(TasksContract.Columns.ID))
-            holder.tli_name.text = task.name
-            holder.tli_description.text = task.description
-            holder.tli_edit.visibility = View.VISIBLE
-            holder.tli_delete.visibility = View.VISIBLE
+
+            holder.bind(task)
         }
     }
 
