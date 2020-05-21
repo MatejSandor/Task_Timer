@@ -1,5 +1,6 @@
 package com.sandor.tasktimer
 
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import java.lang.RuntimeException
 
 /**
  * A placeholder fragment containing a simple view.
@@ -19,9 +21,13 @@ import kotlinx.android.synthetic.main.fragment_main.*
 
 private const val TAG = "MainActivityFragment"
 
-class MainActivityFragment : Fragment() {
+class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickListener {
 
-    private var mAdapter = CursorRecyclerViewAdapter(null)
+    interface OnTaskEdit {
+        fun onTaskEdit(task: Task)
+    }
+
+    private var mAdapter = CursorRecyclerViewAdapter(null, this)
     val viewModel: TaskTimerViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +39,10 @@ class MainActivityFragment : Fragment() {
     override fun onAttach(context: Context) {
         Log.d(TAG, "onAttach: starts")
         super.onAttach(context)
+
+        if(context !is OnTaskEdit) {
+            throw RuntimeException("${context.toString()} must implement onTaskEdit")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +64,19 @@ class MainActivityFragment : Fragment() {
         Log.d(TAG, "onActivityCreated: called")
         super.onActivityCreated(savedInstanceState)
     }
+
+    override fun onEditClick(task: Task) {
+        (activity as OnTaskEdit?)?.onTaskEdit(task)
+    }
+
+    override fun onDeleteClick(task: Task) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onTaskLongClick(task: Task) {
+//        TODO("Not yet implemented")
+    }
+
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewStateRestored: called")
