@@ -43,9 +43,9 @@ class AddEditFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewCreated: called")
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             val task = task
-            if(task != null) {
+            if (task != null) {
                 Log.d(TAG, "onViewCreated: editing task")
                 addedit_name.setText(task.name)
                 addedit_description.setText(task.description)
@@ -56,12 +56,13 @@ class AddEditFragment : Fragment() {
         }
     }
 
-    private fun taskFromUi() : Task {
-        val sortOrder = if(addedit_sortorder.text.isNotEmpty()) {
+    private fun taskFromUi(): Task {
+        val sortOrder = if (addedit_sortorder.text.isNotEmpty()) {
             Integer.parseInt(addedit_sortorder.text.toString())
         } else 0
 
-        val newTask = Task(addedit_name.text.toString(), addedit_description.text.toString(), sortOrder)
+        val newTask =
+            Task(addedit_name.text.toString(), addedit_description.text.toString(), sortOrder)
         newTask.id = task?.id ?: 0
 
         return newTask
@@ -70,7 +71,7 @@ class AddEditFragment : Fragment() {
     private fun saveTask() {
         val newTask = taskFromUi()
 
-        if(newTask != task) {
+        if (newTask != task) {
             task = viewModel.saveTask(newTask)
         }
     }

@@ -13,8 +13,8 @@ import java.lang.IllegalStateException
 
 private const val TAG = "CursorRecyclerViewAdapt"
 
-class TaskViewHolder(override val containerView: View):
-        RecyclerView.ViewHolder(containerView), LayoutContainer {
+class TaskViewHolder(override val containerView: View) :
+    RecyclerView.ViewHolder(containerView), LayoutContainer {
     fun bind(task: Task, listener: CursorRecyclerViewAdapter.OnTaskClickListener) {
         tli_name.text = task.name
         tli_description.text = task.description
@@ -26,7 +26,7 @@ class TaskViewHolder(override val containerView: View):
         }
 
         tli_delete.setOnClickListener() {
-           listener.onDeleteClick(task)
+            listener.onDeleteClick(task)
         }
 
         containerView.setOnLongClickListener() {
@@ -37,10 +37,13 @@ class TaskViewHolder(override val containerView: View):
 }
 
 
-class CursorRecyclerViewAdapter(private var cursor: Cursor?, private val listener: OnTaskClickListener):
-        RecyclerView.Adapter<TaskViewHolder>() {
+class CursorRecyclerViewAdapter(
+    private var cursor: Cursor?,
+    private val listener: OnTaskClickListener
+) :
+    RecyclerView.Adapter<TaskViewHolder>() {
 
-    interface OnTaskClickListener{
+    interface OnTaskClickListener {
         fun onEditClick(task: Task)
         fun onDeleteClick(task: Task)
         fun onTaskLongClick(task: Task)
@@ -49,37 +52,38 @@ class CursorRecyclerViewAdapter(private var cursor: Cursor?, private val listene
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         Log.d(TAG, "onCreateViewHolder: starts")
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.task_list_items,parent,false)
+            .inflate(R.layout.task_list_items, parent, false)
         return TaskViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val cursor = cursor
-        if(cursor == null || cursor.count == 0) {
+        if (cursor == null || cursor.count == 0) {
             Log.d(TAG, "onBindViewHolder: providing instructions")
             holder.tli_name.setText(R.string.instruction_heading)
             holder.tli_description.setText(R.string.instructions)
             holder.tli_edit.visibility = View.GONE
             holder.tli_delete.visibility = View.GONE
         } else {
-            if(!cursor.moveToPosition(position)) {
+            if (!cursor.moveToPosition(position)) {
                 throw IllegalStateException("Couldn't move cursor to position $position")
             }
 
             val task = Task(
                 cursor.getString(cursor.getColumnIndex(TasksContract.Columns.TASK_NAME)),
                 cursor.getString(cursor.getColumnIndex(TasksContract.Columns.TASK_DESCRIPTION)),
-                cursor.getInt(cursor.getColumnIndex(TasksContract.Columns.TASK_SORT_ORDER)))
+                cursor.getInt(cursor.getColumnIndex(TasksContract.Columns.TASK_SORT_ORDER))
+            )
 
             task.id = cursor.getLong(cursor.getColumnIndex(TasksContract.Columns.ID))
 
-            holder.bind(task,listener)
+            holder.bind(task, listener)
         }
     }
 
     override fun getItemCount(): Int {
         val cursor = cursor
-        val count = if(cursor == null || cursor.count == 0) {
+        val count = if (cursor == null || cursor.count == 0) {
             1
         } else {
             cursor.count
@@ -89,7 +93,7 @@ class CursorRecyclerViewAdapter(private var cursor: Cursor?, private val listene
 
 
     fun swapCursor(newCursor: Cursor?): Cursor? {
-        if(newCursor == cursor) {
+        if (newCursor == cursor) {
             return null
         }
 
@@ -97,10 +101,10 @@ class CursorRecyclerViewAdapter(private var cursor: Cursor?, private val listene
         val oldCursor = cursor
         cursor = newCursor
 
-        if(newCursor != null) {
+        if (newCursor != null) {
             notifyDataSetChanged()
         } else {
-            notifyItemRangeChanged(0,numItems)
+            notifyItemRangeChanged(0, numItems)
         }
         return oldCursor
     }

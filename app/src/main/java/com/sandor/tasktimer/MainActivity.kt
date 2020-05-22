@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.content_main.*
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked, MainActivityFragment.OnTaskEdit {
+class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked,
+    MainActivityFragment.OnTaskEdit {
 
     private var mTwoPane = false
 
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked, MainAct
         Log.d(TAG, "onCreate: TwoPane is $mTwoPane")
 
         val fragment = supportFragmentManager.findFragmentById(R.id.task_details_container)
-        if(fragment != null) {
+        if (fragment != null) {
             showEditPane()
         } else {
             task_details_container.visibility = if (mTwoPane) View.INVISIBLE else View.GONE
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked, MainAct
 
     private fun removeEditPane(fragment: Fragment? = null) {
         Log.d(TAG, "removeEditPane: called")
-        if(fragment != null) {
+        if (fragment != null) {
             supportFragmentManager.beginTransaction()
                 .remove(fragment)
                 .commit()
@@ -101,7 +102,7 @@ class MainActivity : AppCompatActivity(), AddEditFragment.OnSaveClicked, MainAct
 
     override fun onBackPressed() {
         val fragment = supportFragmentManager.findFragmentById(R.id.task_details_container)
-        if(fragment == null) {
+        if (fragment == null) {
             super.onBackPressed()
         } else {
             removeEditPane(fragment)

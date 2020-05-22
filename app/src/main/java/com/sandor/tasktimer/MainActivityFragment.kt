@@ -31,9 +31,11 @@ class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickLi
     private var mAdapter = CursorRecyclerViewAdapter(null, this)
     private val viewModel: TaskTimerViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        Log.d(TAG,"onCreateView: called")
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d(TAG, "onCreateView: called")
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -41,7 +43,7 @@ class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickLi
         Log.d(TAG, "onAttach: starts")
         super.onAttach(context)
 
-        if(context !is OnTaskEdit) {
+        if (context !is OnTaskEdit) {
             throw RuntimeException("${context.toString()} must implement onTaskEdit")
         }
     }

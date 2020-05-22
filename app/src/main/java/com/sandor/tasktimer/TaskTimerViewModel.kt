@@ -27,28 +27,34 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
     val cursor: LiveData<Cursor>
         get() = databaseCursor
 
-    init{
-        getApplication<Application>().contentResolver.registerContentObserver(TasksContract.CONTENT_URI,
-            true, contentObserver)
+    init {
+        getApplication<Application>().contentResolver.registerContentObserver(
+            TasksContract.CONTENT_URI,
+            true, contentObserver
+        )
         loadTasks()
     }
 
     private fun loadTasks() {
-        val projection = arrayOf(TasksContract.Columns.ID,
+        val projection = arrayOf(
+            TasksContract.Columns.ID,
             TasksContract.Columns.TASK_NAME,
             TasksContract.Columns.TASK_DESCRIPTION,
-            TasksContract.Columns.TASK_SORT_ORDER)
+            TasksContract.Columns.TASK_SORT_ORDER
+        )
 
-        val sortOrder = "${TasksContract.Columns.TASK_SORT_ORDER}, ${TasksContract.Columns.TASK_NAME}"
+        val sortOrder =
+            "${TasksContract.Columns.TASK_SORT_ORDER}, ${TasksContract.Columns.TASK_NAME}"
         GlobalScope.launch {
             val cursor = getApplication<Application>().contentResolver.query(
-            TasksContract.CONTENT_URI,
-            projection,
-            null,
-            null,
-            sortOrder
-        )
-        databaseCursor.postValue(cursor)}
+                TasksContract.CONTENT_URI,
+                projection,
+                null,
+                null,
+                sortOrder
+            )
+            databaseCursor.postValue(cursor)
+        }
     }
 
     fun saveTask(task: Task): Task {
@@ -57,10 +63,13 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
         values.put(TasksContract.Columns.TASK_DESCRIPTION, task.description)
         values.put(TasksContract.Columns.TASK_SORT_ORDER, task.sortOrder)
 
-        if(task.id == 0L) {
+        if (task.id == 0L) {
             GlobalScope.launch {
                 Log.d(TAG, "saveTask: saving new task")
-                val uri = getApplication<Application>().contentResolver?.insert(TasksContract.CONTENT_URI,values)
+                val uri = getApplication<Application>().contentResolver?.insert(
+                    TasksContract.CONTENT_URI,
+                    values
+                )
                 if (uri != null) {
                     task.id = TasksContract.getId(uri)
                     Log.d(TAG, "saveTask: new id is ${task.id}")
@@ -77,13 +86,17 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
                 )
             }
         }
-            return task
+        return task
     }
 
     fun deleteTask(taskId: Long) {
         Log.d(TAG, "deleteTask: deleting task")
         GlobalScope.launch {
-        getApplication<Application>().contentResolver?.delete(TasksContract.buildUriFromId(taskId),null,null)
+            getApplication<Application>().contentResolver?.delete(
+                TasksContract.buildUriFromId(
+                    taskId
+                ), null, null
+            )
         }
     }
 
